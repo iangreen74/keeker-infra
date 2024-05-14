@@ -4,28 +4,38 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'terraform/**'
   pull_request:
     branches:
       - main
+    paths:
+      - 'terraform/**'
 
 jobs:
   terraform:
-    name: Terraform
+    name: Terraform Deployment
     runs-on: ubuntu-latest
 
+    # Environment variables can be set here or within steps as needed
     env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_REGION: 'us-east-1'  # Change this as necessary
+      AWS_REGION: 'us-east-1'  # Adjust as necessary for your AWS region
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Configure AWS credentials for Terraform
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.TERRAFORM_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.TERRAFORM_AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
-          terraform_version: "1.0.0"  # Specify your Terraform version here
+          terraform_version: "1.1.0"  # Specify the version of Terraform you are using
 
       - name: Terraform Init
         id: init
@@ -36,8 +46,9 @@ jobs:
         run: terraform plan
 
       - name: Terraform Apply
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve
-        env:
-          TF_VAR_aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          TF_VAR_aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Terraform Output
+        run: terraform output
+
