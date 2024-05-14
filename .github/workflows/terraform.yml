@@ -5,12 +5,12 @@ on:
     branches:
       - main
     paths:
-      - 'keeker-infra/**'
+      - 'terraform/**'
   pull_request:
     branches:
       - main
     paths:
-      - 'keeker-infra/**'
+      - 'terraform/**'
 
 jobs:
   terraform:
