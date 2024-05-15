@@ -4,6 +4,7 @@ provider "aws" {
 
 module "eks" {
   source          = "terraform-aws-modules/eks/aws"
+  version         = "~> 20.0"
   cluster_name    = "keeker-cluster"
   cluster_version = "1.21"
   subnets         = ["subnet-abcde012", "subnet-bcde012a", "subnet-fghij012"]
