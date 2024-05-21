@@ -5,7 +5,15 @@ on:
     branches:
       - main
     paths:
-      - 'terraform/**'
+      - 'modules/EKS/**'
+      - 'modules/IAM/**'
+      - 'modules/RDS/**'
+      - 'modules/key/**'
+      - 'modules/VPC/**'
+      - 'modules/Nat-GW/**'
+      - 'modules/NodeGroup/**'
+      - 'modules/vpc/**'
+
   pull_request:
     branches:
       - main
